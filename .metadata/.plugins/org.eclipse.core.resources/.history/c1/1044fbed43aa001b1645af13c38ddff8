@@ -1,0 +1,92 @@
+package dmbs;
+
+import java.util.*;
+import com.spire.doc.Document;
+import com.spire.doc.FileFormat;
+import com.spire.doc.Table;
+import com.spire.doc.fields.Field;
+import java.sql.*;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.*;
+
+public class program {
+	public static void main(String[] args) {
+		//JDBC url and user password for databsse connection
+		String jdbcURL = "jdbc:postgresql://localhost:5432/email";
+		String username = "postgres";
+        String password = "dhruvkaith";
+       
+        Scanner sc= new Scanner(System.in); 
+
+        //specifing where we want to create pdf
+        String filename = "A:\\email\\pdf\\new.pdf";
+        Document document = new Document();
+        
+        System.out.println("Enter client's name: ");
+        String name= sc.nextLine();  
+        System.out.println("Enter client's email: ");
+        String client_email= sc.nextLine();  
+        try {
+        	
+        	 //create a document instance
+            Document doc = new Document();
+     
+            //load the template file
+            doc.loadFromFile("C:\\Users\\Administrator\\Desktop\\Invoice-Template.docx");
+     
+            //replace text in the document
+            doc.replace("#InvoiceNum", "17854", true, true);
+            doc.replace("#CompanyName", "Y Company", true, true);
+            doc.replace("#CompanyAddress", "122 4th Ave", true, true);
+            doc.replace("#CityStateZip", "New York, NY 10011", true, true);
+            doc.replace("#Country", "United States", true, true);
+            doc.replace("#Tel1", "111-222-333", true, true);
+            doc.replace("#ContactPerson", "John Smith", true, true);
+            doc.replace("#ShippingAddress", "122 4th Ave", true, true);
+            doc.replace("#Tel2", "111-222-334", true, true);
+     
+            //define purchase data
+          /*  String[][] purchaseData = {
+                    new String[]{"Product A", "5", "22.8"},
+                    new String[]{"Product B", "4", "35.3"},
+                    new String[]{"Product C", "2", "52.9"},
+                    new String[]{"Product D", "3", "25"},
+            };*/
+          //save file in pdf format
+            doc.saveToFile("A:\\email\\pdf", FileFormat.PDF);
+        	
+            System.out.println("PDF generated");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
+        
+       try {
+    	   Connection connection =  DriverManager.getConnection(jdbcURL, username, password);
+    	   System.out.println("Connected ");
+    	   
+    	   String sql = "INSERT INTO record VALUES (?,?)";
+    	   
+    	   //Statement statement = connection.createStatement();
+    	   PreparedStatement pstmt = connection.prepareStatement(sql);
+    	   
+    	   pstmt.setString(1, name);
+    	   FileInputStream fis = new FileInputStream("A:\\email\\pdf\\new.pdf");
+    	   pstmt.setBinaryStream(2, fis,fis.available());
+    	   pstmt.executeUpdate();
+    	 /*  int rows = statement.executeUpdate(sql);
+    	   if (rows > 0) {
+    		   System.out.print("A new entry is entered");
+    	   }*/
+    	   connection.close();
+
+       } catch(SQLException | IOException e) {
+    	   System.out.println("Error in connecting to databse");
+    	   e.printStackTrace();
+       }
+	}
+
+
+}
