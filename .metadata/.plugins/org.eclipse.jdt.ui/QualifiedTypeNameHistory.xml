@@ -5,4 +5,6 @@
     <fullyQualifiedTypeName name="com.itextpdf.text.pdf.PdfPTable"/>
     <fullyQualifiedTypeName name="com.itextpdf.text.pdf.PdfContentByte"/>
     <fullyQualifiedTypeName name="com.itextpdf.text.pdf.BaseFont"/>
+    <fullyQualifiedTypeName name="java.awt.Font"/>
+    <fullyQualifiedTypeName name="java.awt.Color"/>
 </qualifiedTypeNameHistroy>
